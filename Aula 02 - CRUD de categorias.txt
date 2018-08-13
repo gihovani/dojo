@@ -1,14 +1,20 @@
 # Criando Crud de Categorias
 
 - Personalizando o namespace da aplicação
-// php artisan (tudo no laravel rodamos com o artisan)
-// php artisan app:name NomeDoProjeto [sempre faça isso antes de gerar qualquer código, para não ter dor de cabeça depois]
-// php artisan serve [para ve se está tudo ok]
+// tudo no laravel rodamos com o artisan
+php artisan 
+// sempre faça isso antes de gerar qualquer código, para não ter dor de cabeça depois
+php artisan app:name NomeDoProjeto 
+
+// para ve se está tudo ok
+// php artisan serve 
+
 // colocar os models dentro da pasta model para não deixar muito bagunçado
 // botão direito refactor -> move e colocar no namespace NomeDoProjeto\Models
 
 - Criando a estrutura de categorias e inserir dados fake
-// php artisan make:model Models/Category -m -f -r
+php artisan make:model Models/Category -m -f -r
+
 // -m = migrate
 // -f = factory 
 // -r = resource 
@@ -26,7 +32,8 @@
 // 'slug' => 'deixar-valor-fixo',
 
 // gerar a seeder (semeador)
-// php artisan make:seeder CategoriesTableSeeder
+php artisan make:seeder CategoriesTableSeeder
+
 // alterar o arquivo CategoriesTableSeeder no metodo run
 // chamar o helper factory do laravel
 // factory(Category::class, 5)->create();
@@ -34,9 +41,10 @@
 // altear no databaseseeder
 // Incluir no metodo run $this->call(CategoriesTableSeeder::class);
 // verificar se esta funcionando
-// php artisan db:seed (sempre que executar ele vai acrescentando novas categorias no bd)
+// sempre que executar ele vai acrescentando novas categorias no bd
+php artisan db:seed 
 
-// mysql -uroot -proot
+mysql -uroot -proot
 // use meuprojeto;
 // select * from categories;
 

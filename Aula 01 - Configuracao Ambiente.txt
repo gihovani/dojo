@@ -1,97 +1,107 @@
 # Configuração do ambiente linux e alguns conceitos (Maquina Virtual Ubuntu)
 - Instalação do GIT
-// sudo apt install git
-// git config --global user.email "gihovani@gmail.com"
-// git clone https://github.com/gihovani/git-code-education.git
+sudo apt install git
+git config --global user.email "gihovani@gmail.com"
+git clone https://github.com/gihovani/git-code-education.git
 
 - Instalação e configuração do PHPBrew
 -- https://github.com/phpbrew/phpbrew/wiki/Requirement [instalar dependencias, excecutar com "sudo su"]
-// sudo su 
-// apt install \
-//   php7.2 \
-//   php7.2-curl \
-//   php7.2-json \
-//   php7.2-cgi \
-//   php7.2-fpm \
-//   autoconf \
-//   automake \
-//   libxml2-dev \
-//   libcurl4-openssl-dev \
-//   libssl-dev \
-//   openssl \
-//   gettext \
-//   libicu-dev \
-//   libmcrypt-dev \
-//   libmcrypt4 \
-//   libbz2-dev \
-//   libreadline-dev \
-//   build-essential \
-//   libmhash-dev \
-//   libmhash2 \
-//   libxslt1-dev
+sudo su 
+apt install \
+  php7.2 \
+  php7.2-curl \
+  php7.2-json \
+  php7.2-cgi \
+  php7.2-fpm \
+  autoconf \
+  automake \
+  libxml2-dev \
+  libcurl4-openssl-dev \
+  libssl-dev \
+  openssl \
+  gettext \
+  libicu-dev \
+  libmcrypt-dev \
+  libmcrypt4 \
+  libbz2-dev \
+  libreadline-dev \
+  build-essential \
+  libmhash-dev \
+  libmhash2 \
+  libxslt1-dev
 
 -- https://github.com/phpbrew/phpbrew [instalar phpbrew, para trabalhar com multiplas versoes do php]
-// curl -L -O https://github.com/phpbrew/phpbrew/raw/master/phpbrew
-// chmod +x phpbrew
-// sudo mv phpbrew /usr/local/bin/phpbrew
-// phpbrew init
-// vim .bashrc
+curl -L -O https://github.com/phpbrew/phpbrew/raw/master/phpbrew
+chmod +x phpbrew
+sudo mv phpbrew /usr/local/bin/phpbrew
+phpbrew init
+vim .bashrc
 // add no final do arquivo "[[ -e ~/.phpbrew/bashrc ]] && source ~/.phpbrew/bashrc"
 
-// phpbrew known
-// phpbrew install 7.2.5 +default
-// phpbrew list
-// phpbrew switch php-7.2.5 [muda a versão do php default]
-// php -m (listar módulos instalados do php)
+phpbrew known
+phpbrew install 7.2.8 +default
+phpbrew list
 
-// phpbrew ext install intl [instalar modulo php intl]
-// phpbrew ext intalll pdo_mysql [vai dar erro]
-// phpbrew remove 7.2.5
-// phpbrew install 7.2.5 +default +pdo+mysql +intl +zip
-// phpbrew switch php-7.2.5
-// php -m (listar módulos instalados do php)
+// [muda a versão do php default]
+phpbrew switch php-7.2.8 
+
+// (listar módulos instalados do php)
+php -m 
+
+// [instalar modulo php intl]
+phpbrew ext install intl 
+
+// [vai dar erro]
+phpbrew ext intalll pdo_mysql 
+phpbrew remove php-7.2.8
+phpbrew install 7.2.8 +default +pdo+mysql +intl +zip
+phpbrew switch php-7.2.8
+
+// (listar módulos instalados do php)
+php -m 
 
 
 - Instalação do Composer e do laravel installer
 -- https://getcomposer.org/download/
-// php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-// php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } // else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-// php composer-setup.php
-// php -r "unlink('composer-setup.php');"
-// sudo mv composer.phar /usr/local/bin/composer
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } // else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+sudo mv composer.phar /usr/local/bin/composer
 
 // composer global require "laravel/installer"
 -- https://laravel.com/docs/5.6/
 
-// # add esse caminho no path ~/.config/composer/vendor/bin/
-// suvo vim /etc/enviroment
-// source /etc/enviroment
-// laravel new nomedoprojeto
+// # add essa linha no path "export PATH=$HOME/.config/composer/vendor/bin:$PATH"
+sudo vim ~/.bashrc
+source ~/.bashrc
+laravel new nomedoprojeto
 
 - Instalação do NodeJS
 -- https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
-// curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-// sudo apt-get install -y nodejs
-// node -v
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+sudo apt-get install -y nodejs
+node -v
 
 - Instalação do MySQL
-// sudo apt install mysql-server
-// sudo mysql -uroot
-// ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';
-// create database meuprojeto;
+sudo apt install mysql-server
+sudo mysql -uroot
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';
+create database meuprojeto;
 // configurar .env do projeto laravel
-// php artisan migrate
-// php artisan serve 
+php artisan migrate
+php artisan serve 
 // acessar http://localhost:8000
 // se der erro
 // esse erro e caracteristico do mysql pq o laravel adicionou suporte a partir do 5.4 para os emoticons
 // App/Providers/AppServiceProvider.php Chamar facade Schema \Schema::defaultStringLength(191);
-// php artisan migrate:fresh --destroi e refaz o banco
+// destroi e refaz o banco
+php artisan migrate:fresh
 
 -- http://wb.mysql.com/ [instalar o worckbench]
 
 - Instalação da Ide de desenvolvimento
-// sudo snap install phpstorm --classic
+sudo snap install phpstorm --classic
 // instalar plugins [file -> setings -> browser repositories] Laravel Plugins
 
 - Instalação do Postman
