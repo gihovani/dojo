@@ -1,0 +1,134 @@
+# Criando Crud de Categorias
+
+- Personalizando o namespace da aplicação
+// php artisan (tudo no laravel rodamos com o artisan)
+// php artisan app:name NomeDoProjeto [sempre faça isso antes de gerar qualquer código, para não ter dor de cabeça depois]
+// php artisan serve [para ve se está tudo ok]
+// colocar os models dentro da pasta model para não deixar muito bagunçado
+// botão direito refactor -> move e colocar no namespace NomeDoProjeto\Models
+
+- Criando a estrutura de categorias e inserir dados fake
+// php artisan make:model Models/Category -m -f -r
+// -m = migrate
+// -f = factory 
+// -r = resource 
+// php artisan make:factory --help [se quiser criar separado]
+
+// alterar o arquivo create_categories table
+// $table->string('name');
+// $table->string('slug'); // usado para url amigavel
+// $table->boolean('active')->default(1);
+// verificar se tudo está ok 
+// php artisan migrate:refresh
+
+// alterar o arquivo categoryfactory [para adicionar os dados com "faker"]
+// 'nome' => $faker->colorName,
+// 'slug' => 'deixar-valor-fixo',
+
+// gerar a seeder (semeador)
+// php artisan make:seeder CategoriesTableSeeder
+// alterar o arquivo CategoriesTableSeeder no metodo run
+// chamar o helper factory do laravel
+// factory(Category::class, 5)->create();
+
+// altear no databaseseeder
+// Incluir no metodo run $this->call(CategoriesTableSeeder::class);
+// verificar se esta funcionando
+// php artisan db:seed (sempre que executar ele vai acrescentando novas categorias no bd)
+
+// mysql -uroot -proot
+// use meuprojeto;
+// select * from categories;
+
+
+- Rotas no laravel
+// tem a pasta routes [web.php e api.php]
+// tem outros arquivos channel é usado para websocket e o commands.php que é usado se quisermos criar comandos para usar pelo terminal
+// Olhando o arquivo index.php
+// Providers/RoutServiceProvider.php nesse arquivo que temos a importacao das rotas web e api
+// qual a diferença do middleware entre middleware web e api
+// dentro de http/kernel.php tem as importacoes para que a web aconteça tem que ser importado cookie e sessao já na api não precisa 
+// a unica coisa que precisa é o throtle que é um estrangulador onde configuramos que cada ip pode fazer até 60 requisicoes por minuto 
+// já o bingdins é pra que no controller tenha a facilidade no controller de receber o model direto via rota, como podemos ver a api é bem mais simples
+
+- configurar o recurso de categorias (controller)
+-- https://laravel.com/docs/5.6/controllers#resource-controllers
+// Alterar o arquivo api.php
+// no laravel tem uma função chamada resource da facade ROUTE que é muito util para não precisarmos ficar criando um metodo para cada tipo de requisicao
+// Route::resource('categories', 'CategoryController', ['except' => ['create', 'edit']]);
+// php artisan route:list
+
+- Mostrando as categorias
+// alterar o controller CategoryController no metodo index
+// Category::all();
+
+// falar sobre o eloquent que é algo magico do laravel (lembrar que a variavel é do mesmo nome do parametro)
+// remover o tipo catogry da requisicao e mostrar pra ver 
+// alterar o metodo show 
+// return Category;
+
+- Criando uma nova categoria
+// Alterar o model
+// protected $fillable = ['nome', 'active'];
+// slug não vou colocar pq sera usado uma biblioteca de 3 para gerar a url amigavel através do nome da categoria
+
+// trabalhar na ação store
+// $category = Category::create($request->all());
+// return $category;
+
+// mostrar o postman
+
+- Validação de dados
+-- https://laravel.com/docs/5.6/validation#form-request-validation
+// mostrar o erro postando string no active
+
+// criar uma nova request
+// php artisan make:request CategoryRequest
+// autorize return true (muita gente usa pra saber se o cara ta autenticado ou nao mas não vamos usar isso aqui);
+
+// no metodo rules colocamos as regras para validar os dados
+// return ['name' => 'required|max:255', 'active' => 'boolean'];
+
+
+- Atualização de dados
+// alterar o metodo update
+// $category->fill($request->all());
+// $category->save();
+// return $category;
+// mostrar 404 tentando salvar alguma categoria que nao existe
+
+- Apagando os dados
+// alterar o metodo destroy
+// $category->delete();
+// return response([], 204);
+
+- Falar sobre os código de status http
+-- https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status
+
+- Gerando o slug automatico
+-- https://github.com/cviebrock/eloquent-sluggable
+// alterar o model Category
+// use Sluggable;
+// implementar o metodo sluggable()
+// public function sluggable(): array
+// {
+// 		return ['slug' => ['source' => 'name']];
+// }
+// com essa trait ela vai se plugar no nosso modulo e toda vez que formos salvar a categoria ela vai pegar o name e gerar o slug
+// e la no categoryfactory remover o campo que estavamos usando como default
+// php artisan migrate:refresh --seed
+// mostrar os slugs no bd select * from categories;
+
+- Route Model binding (para pegar os dados pelo slug)
+// alterar o arquivo routeserviceprovider
+// Route::bind('category', function ($value) {
+// 	dd($value);	
+// });
+// alterar para
+// Route::bind('category', function ($value) {
+// 	$category = Category::whereId($value)->orWhere('slug', $value)->get(); 
+// 	return $category->first();
+// });
+
+- Melhorando o autocomplete da IDE
+-- https://github.com/barryvdh/laravel-ide-helper
