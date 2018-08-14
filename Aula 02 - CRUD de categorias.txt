@@ -3,21 +3,18 @@
 - Personalizando o namespace da aplicação
 // tudo no laravel rodamos com o artisan
 php artisan 
-// sempre faça isso antes de gerar qualquer código, para não ter dor de cabeça depois
+// o laravel ja cria um namespace pra nossa aplicacao App, se quisermos personalizar sempre faça isso antes de gerar qualquer código, para não ter dor de cabeça depois.
 php artisan app:name NomeDoProjeto 
 
 // para ve se está tudo ok
 // php artisan serve 
 
 // colocar os models dentro da pasta model para não deixar muito bagunçado
-// botão direito refactor -> move e colocar no namespace NomeDoProjeto\Models
+// botão direito no nome da classe: refactor -> move e colocar no namespace NomeDoProjeto\Models
 
 - Criando a estrutura de categorias e inserir dados fake
-php artisan make:model Models/Category -m -f -r
-
-// -m = migrate
-// -f = factory 
-// -r = resource 
+php artisan make:model Models/Category -all
+// vai criar o model, o controller do tipo resource, a factory e a migracao para base de dados
 // php artisan make:factory --help [se quiser criar separado]
 
 // alterar o arquivo create_categories table
@@ -140,3 +137,10 @@ mysql -uroot -proot
 
 - Melhorando o autocomplete da IDE
 -- https://github.com/barryvdh/laravel-ide-helper
+composer require barryvdh/laravel-ide-helper --dev
+composer require doctrine/dbal --dev
+
+php artisan ide-helper:generate
+php artisan ide-helper:models
+php artisan ide-helper:meta
+

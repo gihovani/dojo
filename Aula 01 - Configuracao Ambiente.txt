@@ -87,7 +87,8 @@ node -v
 sudo apt install mysql-server
 sudo mysql -uroot
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';
-create database meuprojeto;
+create database novoprojeto;
+
 // configurar .env do projeto laravel
 php artisan migrate
 php artisan serve 
@@ -101,10 +102,12 @@ php artisan migrate:fresh
 -- http://wb.mysql.com/ [instalar o worckbench]
 
 - Instalação da Ide de desenvolvimento
-sudo snap install phpstorm --classic
+-- https://download-cf.jetbrains.com/webide/PhpStorm-2018.2.1.tar.gz
+# sudo snap install phpstorm --classic
 // instalar plugins [file -> setings -> browser repositories] Laravel Plugins
 
 - Instalação do Postman
+sudo apt-get install libgconf-2-4
 -- https://app.getpostman.com/app/download/linux64?_ga=2.152867705.1352505179.1534166878-1066877961.1527853388
 
 
