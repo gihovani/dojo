@@ -1,0 +1,168 @@
+# Iniciando com Angular
+
+// Não falei antes mais quem ainda nao trabalhou com javascript vai ter dificuldades, de trabalhar com angular pois ele é um framework javascript 
+// então muitas vezes o que precisamos fazer nao tem nada ver com angular e sim com js.
+
+
+
+- Criando uma aplicação angular
+ng new angular-app
+cd angular-app
+ng serve 
+
+// verificar localhost:4200 para ver se tudo instalou corretamente
+
+
+- Instalando o Bootstrap na aplicação, vai salvar o bootstrap na pasta node modules
+npm install bootstrap --save
+
+
+- Instalando as dependencias do bootstrap
+npm install jquery popper.js --save
+
+
+- Alterar o arquivo de configuracao angular.json
+"styles": [
+  "src/styles.css",
+  "node_modules/bootstrap/dist/css/bootstrap.css"
+],
+"scripts": [
+  "node_modules/popper.js/dist/umd/popper.js",
+  "node_modules/jquery/dist/jquery.js",
+  "node_modules/bootstrap/dist/js/bootstrap.js"
+]
+
+// quando mexer no arquivo angular.json tem que reiniciar o ng serve
+
+
+- falar do index do processo de como inicia uma app angular (app-root)
+// falar que todo componente é uma classe, que todo componente tem um templete (html) e tem um estilo (css)
+
+
+- criando nosso primeiro componente em angular
+ng g c components/pages/categories/category-list
+
+
+- documentacao bootstrap: http://getbootstrap.com/docs/4.1/getting-started/introduction/
+
+
+- adicionar o FormsModule no arquivo app.module.js
+
+- adicionar o modulo HttpClientModule no arquivo app.module.js
+
+- adicionar o cors
+php artisan make:middleware CorsMiddleware
+// alterar conteudo do arquivo
+
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+
+class CorsMiddleware
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
+     */
+    public function handle($request, Closure $next)
+    {
+        if ($request->is('api/*')) {
+            header('Access-Control-Allow-Origin: *');
+
+        }
+        return $next($request);
+    }
+}
+
+- mostrar o outros cors:
+header('Access-Control-Allow-Headers: Content-type, Authorization');
+header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
+header('Access-Control-Expose-Headers: Authorization');
+
+
+- alterar o arquivo kernel.php
+protected $middleware = [
+        \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
+        \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
+        \App\Http\Middleware\TrimStrings::class,
+        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \App\Http\Middleware\TrustProxies::class,
+        CorsMiddleware::class
+    ];
+
+
+
+
+- arquivo angular
+
+import {Component, OnInit} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+
+@Component({
+    selector: 'app-category-list',
+    templateUrl: './category-list.component.html',
+    styleUrls: ['./category-list.component.css']
+})
+export class CategoryListComponent implements OnInit {
+
+    category = {
+        id: 0,
+        name: '',
+        active: false
+    };
+    itens = [];
+    success = '';
+    error = '';
+    id = 0;
+
+    constructor(private httpClient: HttpClient) {
+    }
+
+    ngOnInit() {
+    }
+    getItemIndexFromItens(id) {
+        const index = this.itens.findIndex((item) => {
+            return item.id == id;
+        });
+        return index;
+    }
+    submit() {
+        if (this.category.name) {
+            const idx = this.getItemIndexFromItens(this.category.id);
+            if (idx < 0) {
+                this.category.id = ++this.id;
+                this.itens.push(this.category);
+                this.success = 'Categoria cadastrada com sucesso';
+            } else {
+                this.success = 'Categoria alterada com sucesso';
+                this.itens.splice(idx, 1, this.category);
+            }
+
+            // this.httpClient.post('http://localhost:8000/api/category', this.category).subscribe(response => { });
+
+            this.error = '';
+            this.resetForm();
+        } else {
+            this.success = '';
+            this.error = 'Categoria não pode ser cadastrada, preencha os dados corretamente!';
+        }
+        return false;
+    }
+
+    edit(category) {
+        this.category = category;
+    }
+
+    resetForm() {
+        this.category = {
+            id: 0,
+            name: '',
+            active: false
+        };
+    }
+}
